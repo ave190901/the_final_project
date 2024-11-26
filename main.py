@@ -90,3 +90,62 @@ def get_restart(value):
         case _:
             return (f'Введено неверное значение... '
                     f'Тогда играем дальше :)')
+
+
+if __name__ == '__main__':
+
+    print(f'Начало игры.\n ')
+
+    print(get_rules(input(str('Вам известны правила?\n (Да/Нет) '))))
+
+    while True:
+        try:
+            while True:
+                n = int(input('Введите количество цифр в числе (от 4 до 9 знаков) '))
+                if n in range(4, 10):
+                    number = CowsAndBulls()
+                    break
+                else:
+                    print ('Введено значение вне диапозона. '
+                           'Повторите ввод.')
+        except ValueError:
+            print(f'Введено некорректное число. '
+                  f'Проверьте, что число введено цифрами.')
+            continue
+
+        x = 0 # счетчик попыток
+        while True:
+            user_num = str(input('Введите число: '))
+            try:
+                num_num = int(copy.copy(user_num))
+                print(type(num_num))
+            except ValueError:
+                print(f'Введено некорректное число. '
+                      f'Проверьте, что число введено цифрами.')
+                continue
+
+            if len(str(user_num)) == n:
+                number.set_user_num(user_num)
+                x += 1
+                cows = number.count_cows()
+                bulls = number.count_bulls()
+                if bulls == number.n:
+                    number.write_history(user_num, cows, bulls)
+                    for el in number.history:
+                        print(el)
+                    print('Победа!')
+                    print(f'Загадонное число {number.get_num()}.')
+                    print(f'Вы угадали за {x} попыток.')
+                    number.rewrite_history()
+                    print(get_restart(str(input('Начать сначала? '))))
+                    break
+
+                else:
+                    number.write_history(user_num, cows, bulls)
+                    for el in number.history:
+                        print(el)
+            else:
+                print(f'Введено некорректное число. '
+                      f'Проверьте, что количество цифр в вашем числе совпадает\n'
+                      f'с выбранным вами для тайного числа.\n'
+                      f'Повторите попытку.')
