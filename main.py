@@ -1,58 +1,84 @@
 import copy
 import random
 
+
 class CowsAndBulls:
+    """Игра Быки и Коровы."""
     def __init__(self):
-        self.n = 0
+        """Устанавливает атрибуты CowsAndBulls."""
+        self.n: int = 0
         self.user_num, self.num = '', ''
         self.cows, self.bulls = 0, 0
-        self.history = [f'Ваше число | Быки | Коровы']
+        self.history: list = [f'Ваше число | Быки | Коровы']
 
-    def generate_num(self, n):
+    def generate_num(self, n) -> str:
+        """Генерирует рандомное n-значное число."""
         self.n = n
         for i in range (self.n):
             self.num += str(random.randint(0,self.n))
         return self.num
 
-    def get_num(self):
+    def get_num(self) -> str:
+        """Выводит загаданное число."""
         return self.num
 
-    def set_user_num(self, new_user_num):
-        # self.user_num = f"{new_user_num:0{self.n}}"
+    def set_user_num(self, new_user_num: str):
+        """Устанавливает новое значение числа пользователя"""
         self.user_num = new_user_num
 
-    def count_cows(self):
+    def count_cows(self) -> int:
+        """Счетчик коров"""
         self.cows = 0
-        numbers = copy.copy(set(self.num)) # Копирует и преобразует загаданное число во множество.
-        print(numbers)
-        numbers = list(numbers)
-        for i in range(len(numbers)): # Цикл считает количество цифр из загаданного числа в введенном пользователем.
+        numbers: set = copy.copy(set(self.num))
+        # Представляет множество с цифрами загаданного числа, без повторов.
+        # Копия загаданного числа.
+        numbers: list = list(numbers)
+        for i in range(len(numbers)):
+            # Цикл считает количество цифр из загаданного числа
+            # в введенном пользователем.
             for j in range(len(self.user_num)):
                 if numbers[i] == self.user_num[j]:
                     self.cows += 1
-                    # numbers = numbers.replace(numbers[i], ' ', 1)
-        #if self.cows == 0:
-        #    return self.cows
-        #elif self.cows >= self.count_bulls():
         return self.cows - self.count_bulls()
 
-    def count_bulls(self):
+    def count_bulls(self) -> int:
+        """Счетчик быков"""
         self.bulls = 0
         for i in range(len(self.user_num)):
             if self.num[i] == self.user_num[i]:
                 self.bulls += 1
         return self.bulls
 
-    def write_history(self, number, cows, bulls):
-        self.history += [f'{number} | {bulls} | {cows}']
+    def write_history(self, cows, bulls) -> list:
+        """Запись истории попыток.
+
+        Args:
+            cows: Количество коров.
+            bulls: Количество быков.
+
+        Returns:
+            Лист записей попыток.
+
+        """
+        self.history += [f'{self.user_num} | {bulls} | {cows}']
         return self.history
 
     def rewrite_history(self):
+        """Очистка истории"""
         self.history = [f'Ваше число | Быки | Коровы']
 
 
+def get_rules(value) -> str:
+    """Выводит правила игры.
 
-def get_rules(value):
+    Args:
+        value: Ответ пользователя на вопрос о выводе правил.
+
+    Returns:
+        Выводит правила при положительном ответе, при другом ответе пропускает
+        вывод правил и начинает игру
+
+    """
     value = value.lower()
     match value:
         case 'нет':
@@ -81,6 +107,13 @@ def get_rules(value):
                     f'Тогда будем считать, что правила Вам известны. :)')
 
 def get_restart(value):
+    """В зависимости от ответа пользователя перезапускает игру после того,
+    как отгаданно число.
+
+    Args:
+        value: Ответ пользователя.
+
+    """
     value = value.lower()
     match value:
         case 'нет':
@@ -93,7 +126,6 @@ def get_restart(value):
 
 
 if __name__ == '__main__':
-
     print(f'Начало игры.\n ')
 
     print(get_rules(input(str('Вам известны правила?\n (Да/Нет) '))))
@@ -101,9 +133,12 @@ if __name__ == '__main__':
     while True:
         try:
             while True:
-                n = int(input('Введите количество цифр в числе (от 4 до 9 знаков) '))
+                n: int = int(input(
+                    'Введите количество цифр в числе (от 4 до 9 знаков) ')
+                )
                 if n in range(4, 10):
-                    number = CowsAndBulls()
+                    number: CowsAndBulls = CowsAndBulls()
+                    print(number.generate_num(n))  # Убрать принт!!!
                     break
                 else:
                     print ('Введено значение вне диапозона. '
@@ -113,24 +148,23 @@ if __name__ == '__main__':
                   f'Проверьте, что число введено цифрами.')
             continue
 
-        x = 0 # счетчик попыток
+        x = 0 # Переменная счетчика попыток
         while True:
-            user_num = str(input('Введите число: '))
+            user_num: str = str(input('Введите число: '))
             try:
-                num_num = int(copy.copy(user_num))
-                print(type(num_num))
+                num_num: int = int(copy.copy(user_num))
             except ValueError:
                 print(f'Введено некорректное число. '
                       f'Проверьте, что число введено цифрами.')
                 continue
 
-            if len(str(user_num)) == n:
+            if len(user_num) == n:
                 number.set_user_num(user_num)
                 x += 1
-                cows = number.count_cows()
-                bulls = number.count_bulls()
+                cows: int = number.count_cows()
+                bulls: int = number.count_bulls()
                 if bulls == number.n:
-                    number.write_history(user_num, cows, bulls)
+                    number.write_history(cows, bulls)
                     for el in number.history:
                         print(el)
                     print('Победа!')
@@ -141,11 +175,12 @@ if __name__ == '__main__':
                     break
 
                 else:
-                    number.write_history(user_num, cows, bulls)
+                    number.write_history(cows, bulls)
                     for el in number.history:
                         print(el)
+
             else:
                 print(f'Введено некорректное число. '
-                      f'Проверьте, что количество цифр в вашем числе совпадает\n'
-                      f'с выбранным вами для тайного числа.\n'
+                      f'Проверьте, что количество цифр в вашем '
+                      f'числе совпадает с выбранным вами для тайного числа.\n'
                       f'Повторите попытку.')
