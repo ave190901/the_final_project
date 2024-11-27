@@ -139,7 +139,6 @@ if __name__ == '__main__':
                 )
                 if n in range(4, 10):
                     number: CowsAndBulls = CowsAndBulls()
-                    print(number.generate_num(n))  # Убрать принт!!!
                     break
                 else:
                     print('Введено значение вне диапозона. \nПовторите ввод.')
